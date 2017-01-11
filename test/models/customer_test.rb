@@ -13,15 +13,22 @@ class CustomerTest < ActiveSupport::TestCase
       "account_credit": 13.15
     }
   }
-  let (:customer) { Customer.new(@customer_data) }
+
+  before do
+    @customer = Customer.new(customer_data)
+  end
 
   describe "Constructor" do
     it "Can be created" do
-      Customer.create!(@customer_data)
+      Customer.create!(customer_data)
     end
 
     it "Has rentals" do
       @customer.must_respond_to :rentals
+    end
+
+    it "Has movies" do
+      @customer.must_respond_to :movies
     end
   end
 end

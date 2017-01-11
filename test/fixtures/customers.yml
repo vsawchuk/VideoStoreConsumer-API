@@ -1,21 +1,21 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: Ada Lovelace
   registered_at: 2017-01-11 14:01:14
   address: MyString
   city: MyString
   state: MyString
-  postal_code: MyString
-  phone: MyString
+  postal_code: "12345"
+  phone: (123) 456-7890
   account_credit: 1.5
 
 two:
-  name: MyString
-  registered_at: 2017-01-11 14:01:14
+  name: Katherine Johnson
+  registered_at: 2017-01-11 14:01:15
   address: MyString
   city: MyString
   state: MyString
-  postal_code: MyString
-  phone: MyString
-  account_credit: 1.5
+  postal_code: "34556"
+  phone: (345) 789-0123
+  account_credit: 13.37
