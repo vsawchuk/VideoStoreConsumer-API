@@ -87,6 +87,9 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
+    minitest-spec-rails (5.4.0)
+      minitest (~> 5.0)
+      rails (>= 4.1)
     multi_json (1.12.1)
     nio4r (1.2.1)
     nokogiri (1.7.0.1)
@@ -180,6 +183,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   minitest-reporters
+  minitest-spec-rails
   pry-rails
   puma (~> 3.0)
   rails (~> 5.0.1)
