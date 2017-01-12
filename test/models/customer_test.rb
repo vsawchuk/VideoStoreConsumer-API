@@ -31,4 +31,10 @@ class CustomerTest < ActiveSupport::TestCase
       @customer.must_respond_to :movies
     end
   end
+
+  describe "movies_checked_out_count" do
+    it "Should exist" do
+      @customer.must_respond_to :movies_checked_out_count
+    end
+  end
 end
