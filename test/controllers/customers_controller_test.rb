@@ -1,9 +1,10 @@
 require 'test_helper'
 
-class CustomersControllerTest < ActionController::TestCase
+class CustomersControllerTest < ActionDispatch::IntegrationTest
+
   describe "List customers" do
     it "returns a JSON array" do
-      get :index
+      get customers_url
       assert_response :success
       @response.headers['Content-Type'].must_include 'json'
 
@@ -13,7 +14,7 @@ class CustomersControllerTest < ActionController::TestCase
     end
 
     it "should return many customer fields" do
-      get :index
+      get customers_url
       assert_response :success
 
       data = JSON.parse @response.body
@@ -28,7 +29,7 @@ class CustomersControllerTest < ActionController::TestCase
     end
 
     it "returns all customers when no query params are given" do
-      get :index
+      get customers_url
       assert_response :success
 
       data = JSON.parse @response.body
