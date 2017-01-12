@@ -9,7 +9,9 @@ class CustomersController < ApplicationController
     else
       data = Customer.all
     end
-    
+
+    data = data.paginate(page: params[:p], per_page: params[:n])
+
     render json: data.as_json(
       only: [:id, :name, :registered_at, :address, :city, :state, :postal_code, :phone, :account_credit],
       methods: [:movies_checked_out_count]

@@ -110,5 +110,72 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
         data['errors'].must_include 'sort'
       end
     end
+
+    describe "pagination" do
+      it "can restrict entries per page" do
+        Customer.count.must_be :>, 2
+        get customers_url, params: { n: 2 }
+        assert_response :success
+
+        data = JSON.parse @response.body
+        data.length.must_equal 2
+      end
+
+      it "can return different pages" do
+        Customer.count.must_be :>, 2
+        get customers_url, params: { n: 2, p: 1 }
+        assert_response :success
+
+        page_one_data = JSON.parse @response.body
+        page_one_data.length.must_equal 2
+        page_one_ids = page_one_data.map { |c| c['id'] }
+
+        get customers_url, params: { n: 2, p: 2 }
+        assert_response :success
+
+        page_two_data = JSON.parse @response.body
+
+        page_two_data.each do |customer|
+          page_one_ids.wont_include customer['id']
+        end
+      end
+
+      it "Handles pagination and sorting" do
+        Customer.count.must_be :>, 2
+
+        # Get first page
+        get customers_url, params: { sort: 'name', n: 2, p: 1 }
+        assert_response :success
+
+        data = JSON.parse @response.body
+        data.length.must_equal 2
+        all_names = data.map { |c| c['name'] }
+
+        # Get second page
+        get customers_url, params: { sort: 'name', n: 2, p: 2 }
+        assert_response :success
+
+        data = JSON.parse @response.body
+        all_names += data.map { |c| c['name'] }
+
+        # Verify all data is sorted
+        all_names.each_with_index do |name, i|
+          break if i + 1 >= all_names.length
+          name.must_be :<=, all_names[i+1]
+        end
+      end
+
+      it "errors on negative numbers" do
+      end
+
+      it "returns an empty array past the end" do
+      end
+
+      it "handles fewer entries left than page size" do
+      end
+
+      it "requires a number" do
+      end
+    end
   end
 end
