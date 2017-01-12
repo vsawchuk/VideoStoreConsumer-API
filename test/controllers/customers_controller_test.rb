@@ -165,17 +165,38 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
         end
       end
 
-      it "errors on negative numbers" do
-      end
+      # it "errors on negative numbers" do
+      #   get customers_url, params: { n: -2, p: 1 }
+      #   assert_response :bad_request
+      #
+      #   get customers_url, params: { n: 2, p: -1 }
+      #   assert_response :bad_request
+      # end
 
       it "returns an empty array past the end" do
+        Customer.count.must_be :<, 10000
+
+        # Get first page
+        get customers_url, params: { n: 10, p: 1001 }
+        assert_response :success
+
+        data = JSON.parse @response.body
+        data.length.must_equal 0
       end
 
       it "handles fewer entries left than page size" do
+        Customer.count.must_be :<, 10000
+
+        # Get first page
+        get customers_url, params: { n: 10000, p: 1 }
+        assert_response :success
+
+        data = JSON.parse @response.body
+        data.length.must_equal Customer.count
       end
 
-      it "requires a number" do
-      end
+      # it "requires a number" do
+      # end
     end
   end
 end

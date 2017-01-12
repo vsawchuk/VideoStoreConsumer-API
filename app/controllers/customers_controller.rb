@@ -20,10 +20,14 @@ class CustomersController < ApplicationController
 
 private
   def parse_query_args
+    errors = {}
     @sort = params[:sort]
     if @sort and not SORT_FIELDS.include? @sort
-      render status: :bad_request, json: { errors: { sort: "Invalid sort field '#{@sort}'" } }
-      return
+      errors[:sort] = "Invalid sort field '#{@sort}'"
+    end
+
+    unless errors.empty?
+      render status: :bad_request, json: { errors: errors }
     end
   end
 end
