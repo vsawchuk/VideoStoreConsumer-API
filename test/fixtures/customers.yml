@@ -19,3 +19,13 @@ two:
   postal_code: "34556"
   phone: (345) 789-0123
   account_credit: 13.37
+
+three:
+  name: Grace Hooper
+  registered_at: 2017-01-01 14:01:15
+  address: MyString
+  city: MyString
+  state: MyString
+  postal_code: "00001"
+  phone: (345) 789-0123
+  account_credit: 13.37
