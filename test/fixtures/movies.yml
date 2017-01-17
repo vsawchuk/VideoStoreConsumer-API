@@ -1,14 +1,14 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
+  title: WowMovie!
   overview: MyText
   release_date: 2017-01-11
   inventory: 1
   available_inventory: 1
 
 two:
-  title: MyString
+  title: MuchFilm
   overview: MyText
   release_date: 2017-01-11
   inventory: 1
