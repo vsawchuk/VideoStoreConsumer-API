@@ -43,5 +43,36 @@ class MoviesControllerTest < ActionDispatch::IntegrationTest
   end
 
   describe "show" do
+    it "Returns a JSON object" do
+      get movie_url(title: movies(:one).title)
+      assert_response :success
+      @response.headers['Content-Type'].must_include 'json'
+
+      # Attempt to parse
+      data = JSON.parse @response.body
+      data.must_be_kind_of Hash
+    end
+
+    it "Returns expected fields" do
+      get movie_url(title: movies(:one).title)
+      assert_response :success
+
+      movie = JSON.parse @response.body
+      movie.must_include "title"
+      movie.must_include "overview"
+      movie.must_include "release_date"
+      movie.must_include "inventory"
+      movie.must_include "available_inventory"
+    end
+
+    it "Returns an error when the movie doesn't exist" do
+      get movie_url(title: "does_not_exist")
+      assert_response :not_found
+
+      data = JSON.parse @response.body
+      data.must_include "errors"
+      data["errors"].must_include "title"
+
+    end
   end
 end
