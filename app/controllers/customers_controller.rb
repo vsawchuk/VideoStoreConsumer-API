@@ -23,7 +23,7 @@ private
     errors = {}
     @sort = params[:sort]
     if @sort and not SORT_FIELDS.include? @sort
-      errors[:sort] = "Invalid sort field '#{@sort}'"
+      errors[:sort] = ["Invalid sort field '#{@sort}'"]
     end
 
     unless errors.empty?

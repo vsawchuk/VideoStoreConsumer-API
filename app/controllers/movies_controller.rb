@@ -20,7 +20,7 @@ private
   def require_movie
     @movie = Movie.find_by(title: params[:title])
     unless @movie
-      render status: :not_found, json: { errors: { title: "No movie with title #{params["title"]}" } }
+      render status: :not_found, json: { errors: { title: ["No movie with title #{params["title"]}"] } }
     end
   end
 end
