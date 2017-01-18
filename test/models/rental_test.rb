@@ -73,6 +73,73 @@ class RentalTest < ActiveSupport::TestCase
       r.returned = true
       r.save!
     end
+  end
 
+  describe "first_outstanding" do
+    it "returns the only un-returned rental" do
+      Rental.count.must_equal 1
+      Rental.first.returned.must_equal false
+      Rental.first_outstanding(Rental.first.movie, Rental.first.customer).must_equal Rental.first
+    end
+
+    it "returns nil if no rentals are un-returned" do
+      Rental.all.each do |rental|
+        rental.returned = true
+        rental.save!
+      end
+      Rental.first_outstanding(Rental.first.movie, Rental.first.customer).must_be_nil
+    end
+
+    it "prefers rentals with earlier due dates" do
+      # Start with a clean slate
+      Rental.destroy_all
+      last = Rental.create!(
+        movie: movies(:one),
+        customer: customers(:one),
+        due_date: Date.today + 30,
+        returned: false
+      )
+      first = Rental.create!(
+        movie: movies(:one),
+        customer: customers(:one),
+        due_date: Date.today + 10,
+        returned: false
+      )
+      middle = Rental.create!(
+        movie: movies(:one),
+        customer: customers(:one),
+        due_date: Date.today + 20,
+        returned: false
+      )
+      Rental.first_outstanding(
+        movies(:one),
+        customers(:one)
+      ).must_equal first
+    end
+
+    it "ignores returned rentals" do
+      # Start with a clean slate
+      Rental.destroy_all
+      returned = Rental.create!(
+        movie: movies(:one),
+        customer: customers(:one),
+        due_date: Date.today + 10,
+        returned: true
+      )
+      outstanding = Rental.create!(
+        movie: movies(:one),
+        customer: customers(:one),
+        due_date: Date.today + 30,
+        returned: false
+      )
+
+      Rental.first_outstanding(
+        movies(:one),
+        customers(:one)
+      ).must_equal outstanding
+    end
+  end
+
+  describe "overdue" do
   end
 end
