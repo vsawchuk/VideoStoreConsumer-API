@@ -93,6 +93,7 @@ class RentalTest < ActiveSupport::TestCase
     it "prefers rentals with earlier due dates" do
       # Start with a clean slate
       Rental.destroy_all
+
       last = Rental.create!(
         movie: movies(:one),
         customer: customers(:one),
@@ -120,6 +121,7 @@ class RentalTest < ActiveSupport::TestCase
     it "ignores returned rentals" do
       # Start with a clean slate
       Rental.destroy_all
+
       returned = Rental.create!(
         movie: movies(:one),
         customer: customers(:one),
@@ -141,5 +143,47 @@ class RentalTest < ActiveSupport::TestCase
   end
 
   describe "overdue" do
+    it "returns all overdue rentals" do
+      Rental.count.must_equal 1
+      Rental.first.returned.must_equal false
+      Rental.first.due_date.must_be :<, Date.today
+
+      overdue = Rental.overdue
+      overdue.length.must_equal 1
+      overdue.first.must_equal Rental.first
+    end
+
+    it "ignores rentals that aren't due yet" do
+      Rental.create!(
+        movie: movies(:two),
+        customer: customers(:one),
+        due_date: Date.today + 10,
+        returned: false
+      )
+
+      overdue = Rental.overdue
+      overdue.length.must_equal 1
+      overdue.first.must_equal Rental.first
+    end
+
+    it "ignores rentals that have been returned" do
+      Rental.new(
+        movie: movies(:two),
+        customer: customers(:one),
+        due_date: Date.today - 3,
+        returned: true
+      ).save!(validate: false)
+
+      overdue = Rental.overdue
+      overdue.length.must_equal 1
+      overdue.first.must_equal Rental.first
+    end
+
+    it "returns an empty array if no rentals are overdue" do
+      r = Rental.first
+      r.returned = true
+      r.save!
+      Rental.overdue.length.must_equal 0
+    end
   end
 end
