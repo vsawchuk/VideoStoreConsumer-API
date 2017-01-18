@@ -189,5 +189,56 @@ class RentalsControllerTest < ActionDispatch::IntegrationTest
   end
 
   describe "overdue" do
+    # Note that we *don't* check the actual content,
+    # since that is covered by the model tests.
+    # Instead we just check the things the controlelr
+    # is responsible for.
+
+    it "Returns a JSON array" do
+      get overdue_url
+      assert_response :success
+      @response.headers['Content-Type'].must_include 'json'
+
+      # Attempt to parse
+      data = JSON.parse @response.body
+      data.must_be_kind_of Array
+    end
+
+    it "Returns an empty array if no rentals overdue" do
+      # Make sure there's none overdue
+      Rental.all.each do |r|
+        r.returned = true
+        r.save!
+      end
+
+      get overdue_url
+      assert_response :success
+
+      data = JSON.parse @response.body
+      data.must_be_kind_of Array
+      data.length.must_equal 0
+    end
+
+    it "Returns expected fields" do
+      # Make sure we get something back
+      Rental.overdue.length.must_be :>, 0
+
+      get overdue_url
+      assert_response :success
+
+      data = JSON.parse @response.body
+      data.must_be_kind_of Array
+      data.length.must_equal Rental.overdue.length
+
+      data.each do |rental|
+        rental.must_be_kind_of Hash
+        rental.must_include "title"
+        rental.must_include "customer_id"
+        rental.must_include "name"
+        rental.must_include "postal_code"
+        rental.must_include "checkout_date"
+        rental.must_include "due_date"
+      end
+    end
   end
 end
