@@ -29,6 +29,8 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
+
+
     it "returns all customers when no query params are given" do
       get customers_url
       assert_response :success
@@ -108,6 +110,89 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
 
         data.must_include 'errors'
         data['errors'].must_include 'sort'
+      end
+
+      describe "movies_checked_out_count" do
+        it "is 0 if no movies checked out" do
+          # Start with a blank slate
+          Rental.delete_all
+
+          db_customer = customers(:one)
+          db_customer.movies.length.must_equal 0
+
+          # Send the request
+          get customers_url
+          assert_response :success
+
+          # Find our customer
+          data = JSON.parse @response.body
+          wire_customer = data.select{ |c| c["id"] == db_customer.id }.first
+          wire_customer.wont_be_nil
+          wire_customer["movies_checked_out_count"].must_equal 0
+        end
+
+        it "matches the number of movies checked out" do
+          # Start with a blank slate
+          Rental.delete_all
+
+          db_customer = customers(:one)
+          db_customer.movies.length.must_equal 0
+
+          # Create a couple rentals
+          Rental.create!(
+            customer: db_customer,
+            movie: movies(:one),
+            due_date: Date.today + 7,
+            returned: false
+          )
+          Rental.create!(
+            customer: db_customer,
+            movie: movies(:two),
+            due_date: Date.today + 7,
+            returned: false
+          )
+
+          db_customer.reload
+          db_customer.movies.length.must_equal 2
+
+          # Send the request
+          get customers_url
+          assert_response :success
+
+          # Find our customer
+          data = JSON.parse @response.body
+          wire_customer = data.select{ |c| c["id"] == db_customer.id }.first
+          wire_customer.wont_be_nil
+          wire_customer["movies_checked_out_count"].must_equal db_customer.movies.length
+        end
+
+        it "ignores returned movies" do
+          # Start with a blank slate
+          Rental.delete_all
+
+          db_customer = customers(:one)
+
+          # Create a rental that has been returned
+          Rental.create!(
+            customer: db_customer,
+            movie: movies(:one),
+            due_date: Date.today + 7,
+            returned: true
+          )
+
+
+          db_customer.movies.length.must_equal 1
+
+          # Send the request
+          get customers_url
+          assert_response :success
+
+          # Find our customer
+          data = JSON.parse @response.body
+          wire_customer = data.select{ |c| c["id"] == db_customer.id }.first
+          wire_customer.wont_be_nil
+          wire_customer["movies_checked_out_count"].must_equal 0
+        end
       end
     end
 
