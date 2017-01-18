@@ -1,10 +1,28 @@
 class RentalsController < ApplicationController
-  before_action :require_movie, only: [:check_out]
-  before_action :require_customer, only: [:check_out]
+  before_action :require_movie, only: [:check_out, :check_in]
+  before_action :require_customer, only: [:check_out, :check_in]
 
   def check_out
     rental = Rental.new(movie: @movie, customer: @customer, due_date: params[:due_date])
-    
+
+    if rental.save
+      render status: :ok, json: {}
+    else
+      render status: :bad_request, json: { errors: rental.errors.messages }
+    end
+  end
+
+  # TODO: spec: not called "return" because that's a keyword
+  def check_in
+    rental = Rental.first_outstanding(@movie, @customer)
+    unless rental
+      return render status: :not_found, json: {
+        errors: {
+          rental: ["Customer #{@customer.id} does not have #{@movie.title} checked out"]
+        }
+      }
+    end
+    rental.returned = true
     if rental.save
       render status: :ok, json: {}
     else
