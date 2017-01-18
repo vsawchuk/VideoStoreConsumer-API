@@ -4,12 +4,10 @@ one:
   title: WowMovie!
   overview: MyText
   release_date: 2017-01-11
-  inventory: 1
-  available_inventory: 1
+  inventory: 4
 
 two:
   title: MuchFilm
   overview: MyText
   release_date: 2017-01-11
-  inventory: 1
-  available_inventory: 1
+  inventory: 7
