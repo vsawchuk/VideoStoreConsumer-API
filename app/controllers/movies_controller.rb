@@ -19,11 +19,12 @@ class MoviesController < ApplicationController
   def search
     query = params[:query]
     results = MovieWrapper.search(query)
-    # raise
-    render status: :ok, json: results.as_json(except: [:id])
+
+    render status: :ok, json: results
   end
 
-private
+  private
+
   def require_movie
     @movie = Movie.find_by(title: params[:title])
     unless @movie
