@@ -1,4 +1,6 @@
 class Movie < ApplicationRecord
+  attr_accessor :external_id
+  
   has_many :rentals
   has_many :customers, through: :rentals
 
