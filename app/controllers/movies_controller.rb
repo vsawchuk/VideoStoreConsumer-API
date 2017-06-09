@@ -20,13 +20,6 @@ class MoviesController < ApplicationController
         )
       )
   end
-  #
-  # def search
-  #   query = params[:query]
-  #   results = MovieWrapper.search(query)
-  #
-  #   render status: :ok, json: results
-  # end
 
   private
 
