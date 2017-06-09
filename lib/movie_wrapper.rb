@@ -4,6 +4,7 @@ class MovieWrapper
 
   BASE_IMG_URL = "https://image.tmdb.org/t/p/"
   DEFAULT_IMG_SIZE = "w185"
+  DEFAULT_IMG_URL = "http://lorempixel.com/185/278/"
 
   def self.search(query)
     url = BASE_URL + "search/movie?api_key=" + KEY + "&query=" + query
@@ -17,14 +18,6 @@ class MovieWrapper
       end
       return movies
     end
-
-    if !response["hits"].empty?
-      return response["hits"].map do |recipe|
-        Recipe.new(recipe["recipe"]["label"], recipe["recipe"]["uri"].partition("recipe_").last, recipe["recipe"]["image"])
-      end
-    else
-      return []
-    end
   end
 
   private
@@ -34,7 +27,7 @@ class MovieWrapper
       title: api_result["title"],
       overview: api_result["overview"],
       release_date: api_result["release_date"],
-      image_url: (api_result["poster_path"] ? self.construct_image_url(api_result["poster_path"]) : nil),
+      image_url: api_result["poster_path"], #(api_result["poster_path"] ? self.construct_image_url(api_result["poster_path"]) : nil),
       external_id: api_result["id"])
   end
 
