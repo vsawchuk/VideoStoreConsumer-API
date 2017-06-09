@@ -2,8 +2,13 @@ class MoviesController < ApplicationController
   before_action :require_movie, only: [:show]
 
   def index
-    data = Movie.all
-    render status: :ok, json: data.as_json(only: [:title, :release_date])
+    if params[:query]
+      data = MovieWrapper.search(params[:query])
+    else
+      data = Movie.all
+    end
+
+    render status: :ok, json: data
   end
 
   def show
@@ -15,13 +20,13 @@ class MoviesController < ApplicationController
         )
       )
   end
-
-  def search
-    query = params[:query]
-    results = MovieWrapper.search(query)
-
-    render status: :ok, json: results
-  end
+  #
+  # def search
+  #   query = params[:query]
+  #   results = MovieWrapper.search(query)
+  #
+  #   render status: :ok, json: results
+  # end
 
   private
 
