@@ -11,7 +11,7 @@ List all movies
 Look a movie up by `title`
 - `POST /rentals/:title/check-out`  
 Check out one of the movie's inventory to the customer. The rental's check-out date should be set to today.
-- `POST /rentals/:title/check-in`  
+- `POST /rentals/:title/return`  
 Check in one of a customer's rentals
 - `GET /rentals/overdue`  
 List all customers with overdue movies
