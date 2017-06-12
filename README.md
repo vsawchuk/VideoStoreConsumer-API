@@ -24,7 +24,7 @@ Search The Movies DB for movies matching the query
   Minimum fields to return:
   - `title`
   - `release_date`
-
+<!-- 
 ## Other Notes
 Note that this is functionality that was built into the original API
 ### Query Parameters
@@ -47,3 +47,4 @@ Things to note:
 - Possible values for `sort` will be specified
 - If the client requests both sorting and pagination, pagination should be relative to the sorted order
 - Check out the [will_paginate gem](https://github.com/mislav/will_paginate)
+-->
