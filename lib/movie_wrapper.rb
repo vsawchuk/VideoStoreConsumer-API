@@ -32,7 +32,6 @@ class MovieWrapper
   end
 
   def self.construct_image_url(img_name)
-    puts 'CONSTRUCTING URL'
     return BASE_IMG_URL + DEFAULT_IMG_SIZE + img_name
   end
 
